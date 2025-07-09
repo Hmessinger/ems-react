@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { addEmployee } from '../services/EmployeeService'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeComponent = () => {
+
+    const navigator = useNavigate();
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -11,6 +15,11 @@ const EmployeeComponent = () => {
 
         const employee = { firstName, lastName, email }
         console.log(employee)
+
+        addEmployee(employee).then((response) => {
+            console.log(response.data);
+            navigator('/employees')
+        })
     }
 
     return (
