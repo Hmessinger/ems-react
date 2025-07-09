@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { addEmployee } from '../services/EmployeeService'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { addEmployee, getEmployee } from '../services/EmployeeService'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const EmployeeComponent = () => {
 
     const navigator = useNavigate();
+    const { id } = useParams();
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -15,6 +16,18 @@ const EmployeeComponent = () => {
         lastName: '',
         email: ''
     })
+
+    useEffect(() => {
+        if (id) {
+            getEmployee(id).then((response) => {
+                setFirstName(response.data.firstName);
+                setLastName(response.data.lastName);
+                setEmail(response.data.email);
+            }).catch(error => {
+                console.error(error);
+            })
+        }
+    }, [id])
 
     function saveEmployee(e) {
         e.preventDefault();
@@ -60,12 +73,22 @@ const EmployeeComponent = () => {
         return valid;
     }
 
+    function pageTitle() {
+        if (id) {
+            return <h2 className='text-center'>Update Employee</h2>
+        } else {
+            return <h2 className='text-center'>Add Employee</h2>
+        }
+    }
+
     return (
         <div className='container'>
             <br /> <br />
             <div className='row'>
                 <div className='card col-md-6 offset-md-3 offset-md-3'>
-                    <h2 className='text-center'>Add Employee</h2>
+                    {
+                        pageTitle()
+                    }
                     <div className='card-body'>
                         <form>
                             <div className='form-group mb-2'>
